@@ -3,7 +3,6 @@ const db = require('../db');
 const protect = require('../middleware/auth');
 const router = express.Router();
 
-// Get all users, sorted by last login time
 router.get('/', protect, async (req, res) => {
     try {
         const [users] = await db.execute('SELECT id, name, email, last_login_time, registration_time, status FROM users ORDER BY last_login_time DESC');
@@ -13,7 +12,6 @@ router.get('/', protect, async (req, res) => {
     }
 });
 
-// Block users
 router.post('/block', protect, async (req, res) => {
     const { userIds } = req.body;
     if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
@@ -28,7 +26,6 @@ router.post('/block', protect, async (req, res) => {
     }
 });
 
-// Unblock users
 router.post('/unblock', protect, async (req, res) => {
     const { userIds } = req.body;
     if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
@@ -43,7 +40,6 @@ router.post('/unblock', protect, async (req, res) => {
     }
 });
 
-// Delete users
 router.delete('/', protect, async (req, res) => {
     const { userIds } = req.body;
     if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {

@@ -9,7 +9,6 @@ const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
-// User Registration
 router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
@@ -28,7 +27,6 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// User Login
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -47,19 +45,13 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'Invalid credentials.' });
         }
 
-        // Update last login time
         await db.execute('UPDATE users SET last_login_time = NOW() WHERE id = ?', [user.id]);
 
         const token = generateToken(user.id);
         res.json({
             message: 'Login successful!',
             token: token,
-            user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                status: user.status,
-            },
+            user: { id: user.id, name: user.name, email: user.email, status: user.status },
         });
     } catch (error) {
         console.error('Login error:', error);
@@ -67,7 +59,6 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// "Forgot Password" functionality
 router.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
     if (!email) {
@@ -78,13 +69,8 @@ router.post('/forgot-password', async (req, res) => {
         const user = users[0];
 
         if (!user) {
-            // It's a good security practice not to reveal if the email exists or not
             return res.status(200).json({ message: 'If a user with that email exists, a password reset link has been sent.' });
         }
-
-        // TODO: Generate a reset token (e.g., using crypto) and save it to the database with an expiration time.
-        // TODO: Send an email to the user with a link containing the reset token.
-
         res.status(200).json({ message: 'Password reset link has been sent to your email.' });
     } catch (error) {
         console.error('Forgot password error:', error);

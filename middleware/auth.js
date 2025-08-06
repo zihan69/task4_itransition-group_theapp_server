@@ -14,7 +14,6 @@ const protect = async (req, res, next) => {
             if (!user) {
                 return res.status(401).json({ message: 'User not found. Redirecting to login.' });
             }
-
             if (user.status === 'blocked') {
                 return res.status(403).json({ message: 'User is blocked. Redirecting to login.' });
             }
